@@ -8,6 +8,7 @@ const Utils = require('../../test_lib/utils');
 contract('FamerContract::addFarmer', async (accounts) => {
   const accountProvider = new AccountProvider(accounts);
 
+  let farmerAddress = accountProvider.get();
   let farmerContract;
 
   beforeEach(async () => {
@@ -21,6 +22,12 @@ contract('FamerContract::addFarmer', async (accounts) => {
     it('should pass farmer is successfully added.', async () => {
       await farmerContract.addFarmer(
         param.ipfsHash,
+      );
+
+      const farmer = await farmerContract.farmers.call(farmerAddress);
+      assert.isNotNull(
+        farmer,
+        'farmer is not successfully added.',
       );
     });
   });

@@ -1,5 +1,3 @@
-
-
 pragma solidity >=0.5.0;
 
 import "../vendor/VendorInterface.sol";
@@ -32,8 +30,8 @@ contract FarmerContract is FarmerInterface {
 
 
     /* Mappings*/
-    mapping (address => Farmer) private farmers;
-    mapping (address => Item[]) private items;
+    mapping (address => Farmer) public farmers;
+    mapping (address => Item[]) public items;
 
 
     /* Constructor */
