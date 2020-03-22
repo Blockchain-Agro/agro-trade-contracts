@@ -23,7 +23,10 @@
   "dependencies": {
     "assert": "^2.0.0",
     "bn": "^1.0.5",
+    "bootstrap": "^4.4.1",
     "ganache-cli": "^6.9.1",
+    "react-router-dom": "^5.1.2",
+    "reactstrap": "^8.4.1",
     "web3": "^1.2.6"
   }
 }
