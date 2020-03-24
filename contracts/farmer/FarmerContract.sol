@@ -3,6 +3,8 @@ pragma solidity >=0.5.0;
 import "../vendor/VendorInterface.sol";
 import "./FarmerInterface.sol";
 
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+
 contract FarmerContract is FarmerInterface {
 
     /* Structs */
