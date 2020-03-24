@@ -1,4 +1,5 @@
 
+const BN = require('bn.js');
 const { AccountProvider } = require('../../test_lib/utils');
 
 const FarmerContract = artifacts.require('FarmerContract');
@@ -33,7 +34,7 @@ contract('FamerContract::addFarmer', async (accounts) => {
 
   contract('Negative Tests', async () => {
     it('should fail when ipfs hash is 0', async () => {
-      param.ipfsHash = '0x0';
+      param.ipfsHash = Utils.ZERO_BYTES32;
       await Utils.expectRevert(
         farmerContract.addFarmer(
           param.ipfsHash,
