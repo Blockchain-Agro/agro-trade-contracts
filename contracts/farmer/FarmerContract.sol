@@ -47,8 +47,8 @@ contract FarmerContract is FarmerInterface {
         owner = msg.sender;
     }
 
-    function setVendor(VendorInterface _vendorContract) public {
-        vendor = _vendorContract;
+    function setVendor(address _vendorContract) public {
+        vendor = VendorInterface(_vendorContract);
     }
 
 
@@ -156,7 +156,7 @@ contract FarmerContract is FarmerInterface {
         onlyVendor
     {
         require (
-            farmers[msg.sender].ipfsHash != bytes32(0),
+            farmers[_farmer].ipfsHash != bytes32(0),
             "Farmer doesn't exist."
         );
         require (

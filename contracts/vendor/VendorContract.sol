@@ -42,7 +42,7 @@ contract VendorContract is VendorInterface {
      *              - called only once.
      *              - _farmer contract must not be empty.
      */
-    function setFarmerContract(FarmerInterface _farmer)
+    function setFarmerContract(address _farmer)
         public
     {
         require(
@@ -55,7 +55,7 @@ contract VendorContract is VendorInterface {
             "Farmer contract address must not be empty."
         );
 
-        farmer = _farmer;
+        farmer = FarmerInterface(_farmer);
     }
 
 
