@@ -1,5 +1,4 @@
 
-const BN = require('bn.js');
 const { AccountProvider } = require('../../test_lib/utils');
 
 const FarmerContract = artifacts.require('FarmerContract');

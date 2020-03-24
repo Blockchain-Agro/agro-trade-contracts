@@ -1,4 +1,3 @@
-const BN = require('bn.js');
 const { AccountProvider } = require('../../test_lib/utils');
 
 const FarmerContract = artifacts.require('FarmerContract');
@@ -24,6 +23,7 @@ contract('FarmerContract::addItem', async (accounts) => {
 
   contract('Positive Tests', async () => {
     it('should pass when item is successfully added', async () => {
+      const itemCountBeforeItemAdded = await farmerContract.getItemCount(farmerAddress);
     });
   });
 });

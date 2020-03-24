@@ -117,13 +117,26 @@ contract FarmerContract is FarmerInterface {
             "IPFS hash must not be zero"
         );
 
+        uint256 itemLength = items[msg.sender].length;
+
         Item memory item = Item({
             ipfsHash: _itemIpfsHash,
-            id: items[msg.sender].length,
+            id: itemLength,
             isSold: false
         });
 
-        items[msg.sender][items[msg.sender].length + 1] = item;
+        items[msg.sender].push(item);
+    }
+
+    /**
+     * returns count of items belongs to `_farmerAddress`
+     * @param _farmerAddress - Farmer address
+     *
+     * @return itemsLength - length of item array corresponding
+     *                       `_farmerAddress`.
+     */
+    function getItemCount(address _farmerAddress) public returns (uint256 itemsLength) {
+        itemsLength = items[_farmerAddress].length;
     }
 
     function updateTrust(address _farmer, uint8 _trust)
