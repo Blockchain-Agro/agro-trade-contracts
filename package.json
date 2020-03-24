@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "npm run test": "truffle test"
+    "ganache-cli": "./tools/run_ganache_cli.sh",
+    "test": "npm run test:contracts",
+    "test:contracts": "truffle test"
   },
   "repository": {
     "type": "git",
