@@ -7,6 +7,11 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract FarmerContract is FarmerInterface {
 
+    /* Usings */
+
+    using SafeMath for uint256;
+
+
     /* Structs */
 
     struct Farmer {
@@ -95,7 +100,7 @@ contract FarmerContract is FarmerInterface {
 
         Farmer memory farmer = Farmer({
             ipfsHash: _ipfsHash,
-            trust: uint256(0),
+            trust: uint256(5),
             reviewers: uint256(0)
         });
 
@@ -141,12 +146,25 @@ contract FarmerContract is FarmerInterface {
         itemsLength = items[_farmerAddress].length;
     }
 
-    function updateTrust(address _farmer, uint8 _trust)
+    /**
+     * update farmer's trust value
+     * @param _farmer - farmer address.
+     * @param _trust - trust value provided by vendor.
+     */
+    function updateTrust(address _farmer, uint256 _trust)
         public
         onlyVendor
     {
-        // TO DO
-        // calculate new trust and update
+        require (
+            farmers[msg.sender].ipfsHash != bytes32(0),
+            "Farmer doesn't exist."
+        );
+        require (
+            _trust > 0 && _trust <= 5,
+            "Trust value cannot be zero and cannot be greater than 5"
+        );
+
+        farmers[_farmer].trust = farmers[_farmer].trust.add(_trust);
     }
 
 
