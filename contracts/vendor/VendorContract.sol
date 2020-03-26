@@ -17,7 +17,9 @@ contract VendorContract is VendorInterface {
     /* Mappings */
     mapping (address => Vendor) public vendors;
 
+    /* Modifiers */
 
+    /* Modifier to check caller is a farmer. */
     modifier onlyFarmer() {
         require(
             farmer.isFarmer(msg.sender),
@@ -26,6 +28,7 @@ contract VendorContract is VendorInterface {
         _;
     }
 
+    /* Modifier to check caller is a vendor. */
     modifier onlyVendor() {
         require(
             vendors[msg.sender].ipfsHash != bytes32(0),
@@ -58,7 +61,10 @@ contract VendorContract is VendorInterface {
         farmer = FarmerInterface(_farmer);
     }
 
-
+    /**
+     * Adds vendor to the mapping.
+     * @param _ipfsHash - ipfs hash of the vendor object.
+     */
     function addVendor(
         bytes32 _ipfsHash
     )
@@ -85,8 +91,15 @@ contract VendorContract is VendorInterface {
         return vendors[_vendor].ipfsHash != bytes32(0);
     }
 
+    /**
+     * Get vendor details
+     * @param _vendor - vendor address
+     * @return vendor ipfs hash
+     *         vendor trust
+     *         vendor reviewers
+     */
     function getVendor(address _vendor)
-        external
+        public
         onlyFarmer
         onlyVendor
         returns (bytes32,uint256,uint256)
@@ -94,6 +107,10 @@ contract VendorContract is VendorInterface {
         require(
             _vendor != address(0),
             "Vendor address must not be 0"
+        );
+        require(
+            vendors[_vendor].ipfsHash != bytes32(0),
+            "Vendor must exist."
         );
 
         return (

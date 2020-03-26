@@ -167,11 +167,43 @@ contract FarmerContract is FarmerInterface {
         farmers[_farmer].trust = farmers[_farmer].trust.add(_trust);
     }
 
-
+    /**
+     * check for farmer exist or not
+     */
     function isFarmer(address _farmer)
         external
         returns (bool)
     {
         return (farmers[_farmer].ipfsHash != bytes32(0));
+    }
+
+    /**
+     * Get farmer details
+     * @param _farmer - farmer address
+     *
+     * @return farmer ipfs hash
+     *         farmer trust
+     *         farmer reviewers
+     */
+    function getFarmer(address _farmer)
+        public
+        onlyFarmer
+        onlyVendor
+        returns (bytes32, uint256, uint256)
+    {
+        require(
+            _farmer != address(0),
+            "Farmer address cannot be empty."
+        );
+        require(
+            farmers[_farmer].ipfsHash != bytes32(0),
+            "Farmer must exist."
+        );
+
+        return (
+            farmers[_farmer].ipfsHash,
+            farmers[_farmer].trust,
+            farmers[_farmer].reviewers
+        );
     }
 }
