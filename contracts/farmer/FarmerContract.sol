@@ -95,7 +95,7 @@ contract FarmerContract is FarmerInterface {
 
         require(
             farmers[msg.sender].ipfsHash == bytes32(0),
-            "Farmer is already added"
+            "Farmer already exists."
         );
 
         Farmer memory farmer = Farmer({

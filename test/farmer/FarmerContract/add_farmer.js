@@ -18,6 +18,33 @@ contract('FamerContract::addFarmer', async (accounts) => {
     };
   });
 
+  contract('Negative Tests', async () => {
+    it('should fail when ipfs hash is 0', async () => {
+      param.ipfsHash = Utils.ZERO_BYTES32;
+      await Utils.expectRevert(
+        farmerContract.addFarmer(
+          param.ipfsHash,
+          { from: farmerAddress },
+        ),
+        'IPFS hash must not be zero',
+      );
+    });
+
+    it('should fail when farmer is already exists.', async () => {
+      await farmerContract.addFarmer(
+        param.ipfsHash,
+        { from: farmerAddress },
+      );
+      await Utils.expectRevert(
+        farmerContract.addFarmer(
+          param.ipfsHash,
+          { from: farmerAddress },
+        ),
+        'Farmer already exists.',
+      );
+    });
+  });
+
   contract('Positive Tests', async () => {
     it('should pass farmer is successfully added.', async () => {
       await farmerContract.addFarmer(
@@ -29,18 +56,6 @@ contract('FamerContract::addFarmer', async (accounts) => {
       assert.isNotNull(
         farmer,
         'farmer is not successfully added.',
-      );
-    });
-  });
-
-  contract('Negative Tests', async () => {
-    it('should fail when ipfs hash is 0', async () => {
-      param.ipfsHash = Utils.ZERO_BYTES32;
-      await Utils.expectRevert(
-        farmerContract.addFarmer(
-          param.ipfsHash,
-        ),
-        'IPFS hash must not be zero',
       );
     });
   });
