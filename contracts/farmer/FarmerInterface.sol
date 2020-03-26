@@ -5,4 +5,6 @@ interface FarmerInterface {
 
     /** External functions */
     function isFarmer(address) external returns (bool);
+
+    function getProductStatus(address, uint256) external returns (bool);
 }

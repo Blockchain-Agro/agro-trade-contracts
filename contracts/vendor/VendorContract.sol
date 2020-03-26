@@ -125,13 +125,15 @@ contract VendorContract is VendorInterface {
         );
     }
 
+    // TO DO: check for product is sold and only purchased by _vendor
+    // can update trust for a particulat time period.
     /**
      * Update vendor's trust - only farmer can update
      *                       - only after a successful trade.
      * @param _vendor - vendor address
      * @param _trust - trust to be update by
      */
-    function updateTrust(address _vendor, uint256 _trust)
+    function updateTrust(address _vendor, uint256 _trust, uint256 _productId)
         public
         onlyFarmer
     {
@@ -144,6 +146,10 @@ contract VendorContract is VendorInterface {
             "Trust value cannot be zero and cannot be greater than 5"
         );
 
-        vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
+        bool isSold = farmer.getProductStatus(msg.sender, _productId);
+
+        if (isSold) {
+            vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
+        }
     }
 }
