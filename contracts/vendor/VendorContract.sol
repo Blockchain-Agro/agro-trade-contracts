@@ -7,6 +7,11 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract VendorContract is VendorInterface {
 
+    /* Usings */
+
+    using SafeMath for uint256;
+
+
     /* Structs */
     struct Vendor {
         bytes32 ipfsHash;
@@ -118,5 +123,27 @@ contract VendorContract is VendorInterface {
             vendors[_vendor].trust,
             vendors[_vendor].reviewers
         );
+    }
+
+    /**
+     * Update vendor's trust - only farmer can update
+     *                       - only after a successful trade.
+     * @param _vendor - vendor address
+     * @param _trust - trust to be update by
+     */
+    function updateTrust(address _vendor, uint256 _trust)
+        public
+        onlyFarmer
+    {
+        require(
+            vendors[_vendor].ipfsHash != bytes32(0),
+            "Vendor doesn't exist."
+        );
+        require (
+            _trust > 0 && _trust <= 5,
+            "Trust value cannot be zero and cannot be greater than 5"
+        );
+
+        vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
     }
 }
