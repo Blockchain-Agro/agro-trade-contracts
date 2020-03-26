@@ -70,7 +70,7 @@ contract VendorContract is VendorInterface {
         );
         require(
             vendors[msg.sender].ipfsHash == bytes32(0),
-            "Vendor must not be already exists."
+            "Vendor already exists."
         );
         Vendor memory vendor = Vendor({
             ipfsHash: _ipfsHash,
