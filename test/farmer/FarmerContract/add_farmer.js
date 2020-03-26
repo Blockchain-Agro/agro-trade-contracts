@@ -22,6 +22,7 @@ contract('FamerContract::addFarmer', async (accounts) => {
     it('should pass farmer is successfully added.', async () => {
       await farmerContract.addFarmer(
         param.ipfsHash,
+        { from: farmerAddress },
       );
 
       const farmer = await farmerContract.farmers.call(farmerAddress);
