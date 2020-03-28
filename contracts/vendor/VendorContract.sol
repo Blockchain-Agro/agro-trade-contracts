@@ -152,4 +152,11 @@ contract VendorContract is VendorInterface {
             vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
         }
     }
+
+    function buyProduct(address _farmer, uint256 _productId)
+        public
+        onlyVendor
+    {
+        farmer.setProductAsSold(_farmer, _productId);
+    }
 }

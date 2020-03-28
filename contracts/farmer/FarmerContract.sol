@@ -44,6 +44,8 @@ contract FarmerContract is FarmerInterface {
     /* Mapping for Item array */
     mapping (address /* farmer address */ => Item[]) public items;
 
+    /* Mapping for record of products sold */
+    mapping (address => mapping (address => uint256[])) public soldProducts;
 
 
     /* Modifiers */
@@ -212,11 +214,44 @@ contract FarmerContract is FarmerInterface {
         );
     }
 
+    /**
+     * Get product status - sold or not.
+     *
+     * @param _farmer - farmer address
+     * @param _productId - product id
+     *
+     * @return bool - whether product is sold or not
+     *                true - sold
+     *                false - not sold
+     */
     function getProductStatus(address _farmer, uint256 _productId)
         public
         view
         returns (bool)
     {
         return items[_farmer][_productId].isSold;
+    }
+
+    /**
+     * Set product status as sold - only vendor can call.
+     *
+     * @param _farmer - farmer address
+     * @param _productId - product id
+     */
+    function setProductAsSold(address _farmer, uint256 _productId)
+        external
+        onlyVendor
+    {
+        require(
+            farmers[_farmer].ipfsHash != bytes32(0),
+            "Farmer must exist."
+        );
+        require(
+            items[_farmer][_productId].isSold == false,
+            "Product must be available for sell."
+        );
+
+        soldProducts[msg.sender][_farmer].push(_productId);
+        items[_farmer][_productId].isSold = true;
     }
 }
