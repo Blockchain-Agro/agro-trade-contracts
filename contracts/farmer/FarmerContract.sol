@@ -144,7 +144,7 @@ contract FarmerContract is FarmerInterface {
      * @return itemsLength - length of item array corresponding
      *                       `_farmerAddress`.
      */
-    function getItemCount(address _farmerAddress) public returns (uint256 itemsLength) {
+    function getItemCount(address _farmerAddress) public view returns (uint256 itemsLength) {
         itemsLength = items[_farmerAddress].length;
     }
 
@@ -210,5 +210,13 @@ contract FarmerContract is FarmerInterface {
             farmers[_farmer].trust,
             farmers[_farmer].reviewers
         );
+    }
+
+    function getProductStatus(address _farmer, uint256 _productId)
+        public
+        view
+        returns (bool)
+    {
+        return items[_farmer][_productId].isSold;
     }
 }
