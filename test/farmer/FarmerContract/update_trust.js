@@ -17,46 +17,48 @@ contract('FarmerContract::updateTrust', async (accounts) => {
     vendorContract = await VendorContract.new();
 
     param = {
-      itemIpfsHash: '0x1',
-      farmerIpfsHash: '0x2',
-      vendorIpfsHash: '0x3',
+      farmerIpfsHash: '0x1',
+      vendorIpfsHash: '0x2',
+      itemIpfsHash: '0x3',
       trust: new BN(4),
     }
     await farmerContract.addFarmer(
       param.farmerIpfsHash,
       { from: farmerAddress },
     );
-
     await vendorContract.addVendor(
       param.vendorIpfsHash,
       { from: vendorAddress },
     );
-    await farmerContract.setVendor(vendorContract.address);
-    await vendorContract.setFarmerContract(farmerContract.address);
+    await farmerContract.addItem(
+      param.itemIpfsHash,
+      { from: farmerAddress },
+    );
+    await farmerContract.setVendorContractAddress(vendorContract.address);
+    await vendorContract.setFarmerContractAddress(farmerContract.address);
+    await vendorContract.buyProduct(
+      farmerAddress,
+      0,
+      { from: vendorAddress },
+    );
   });
 
   contract('Positive Tests', async () => {
     it('should pass when trust value gets updated successfully', async () => {
-      let farmer = await farmerContract.farmers.call(farmerAddress);
-      const currentTrust = new BN(farmer[1].toNumber());
-
-      await farmerContract.updateTrust(
+      const oldTrust = await farmerContract.getTrust(farmerAddress);
+      await farmerContract.updateFarmerTrust(
         farmerAddress,
-        param.trust,
+        new BN(0),
+        new BN(4),
         { from: vendorAddress },
       );
 
-      farmer = await farmerContract.farmers.call(farmerAddress);
-      const updatedTrust = farmer[1].toNumber();
-
-      const trustToBeUpdated = new BN(param.trust);
-      const expectedTrust = currentTrust.add(trustToBeUpdated).toNumber();
-      const actualTrust = updatedTrust;
-
+      const updatedTrust = await farmerContract.getTrust(farmerAddress);
+      const expectedTrust = oldTrust.add(new BN(4));
       assert.strictEqual(
-        expectedTrust,
-        actualTrust,
-        'Expected and actual trust must match.',
+        updatedTrust.toNumber(),
+        expectedTrust.toNumber(),
+        'Trust is not successfully updated.'
       );
     });
   });
@@ -65,13 +67,58 @@ contract('FarmerContract::updateTrust', async (accounts) => {
     // TO DO: test for farmer doesn't exist.
     it('should fail when trust value is not in between 1 and 5', async () => {
       const trust = new BN(10);
+      const productId = new BN(0);
       await Utils.expectRevert(
-        farmerContract.updateTrust(
+        farmerContract.updateFarmerTrust(
           farmerAddress,
+          productId,
           trust,
           { from: vendorAddress },
         ),
-        'Trust value cannot be zero and cannot be greater than 5',
+        'Trust value cannot be zero and cannot be greater than 5.'
+      );
+    });
+
+    it('should fail when vendor try to update farmer trust second time for the same product', async () => {
+      const trust = new BN(4);
+      const productId = new BN(0);
+
+      await farmerContract.updateFarmerTrust(
+        farmerAddress,
+        productId,
+        trust,
+        { from: vendorAddress },
+      );
+
+      await Utils.expectRevert(
+        farmerContract.updateFarmerTrust(
+          farmerAddress,
+          productId,
+          trust,
+          { from: vendorAddress },
+        ),
+        'Multiple trust updations for same product is not allowed.'
+      );
+    });
+
+    it('should fail when vendor try to update trust without successful trade.', async () => {
+      const itemIpfsHash = '0x4';
+      const trust = new BN(4);
+      const productId = new BN(1);
+
+      await farmerContract.addItem(
+        itemIpfsHash,
+        { from: farmerAddress },
+      );
+
+      await Utils.expectRevert(
+        farmerContract.updateFarmerTrust(
+          farmerAddress,
+          productId,
+          trust,
+          { from: vendorAddress }
+        ),
+        'Trade must be successful before updating trust.',
       );
     });
   });

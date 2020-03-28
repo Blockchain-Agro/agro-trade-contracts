@@ -47,6 +47,9 @@ contract FarmerContract is FarmerInterface {
     /* Mapping for record of products sold */
     mapping (address => mapping (address => mapping (uint256 => bool))) public soldProducts;
 
+    /* Mapping for update trust */
+    mapping (address => mapping (address => mapping (uint256 => bool))) public updateTrust;
+
 
     /* Modifiers */
 
@@ -155,19 +158,32 @@ contract FarmerContract is FarmerInterface {
      * @param _farmer - farmer address.
      * @param _trust - trust value provided by vendor.
      */
-    function updateTrust(address _farmer, uint256 _trust)
+    function updateFarmerTrust(address _farmer, uint256 _productId, uint256 _trust)
         public
         onlyVendor
     {
         require (
+            vendor.isVendor(msg.sender) == true,
+            "Vendor must exist."
+        );
+        require(
             farmers[_farmer].ipfsHash != bytes32(0),
-            "Farmer doesn't exist."
+            "Farmer must exist"
         );
         require (
             _trust > 0 && _trust <= 5,
             "Trust value cannot be zero and cannot be greater than 5"
         );
+        require(
+            soldProducts[msg.sender][_farmer][_productId] == true,
+            "Trade must be successful before updating trust."
+        );
+        require(
+            updateTrust[msg.sender][_farmer][_productId] == false,
+            "Multiple trust updations for same product is not allowed."
+        );
 
+        updateTrust[msg.sender][_farmer][_productId] = true;
         farmers[_farmer].trust = farmers[_farmer].trust.add(_trust);
     }
 
