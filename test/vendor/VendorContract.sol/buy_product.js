@@ -52,12 +52,11 @@ contract('VendorContract::buyProduct', async (accounts) => {
         0,
         { from: vendorAddress}
       );
-
       const productStatus = await farmerContract.getProductStatus(farmerAddress, 0);
       assert.strictEqual(
         productStatus,
         true,
-        'Product status must change to isSold after successful trade.'
+        'Product status must change to isSold after successful trade.',
       );
 
       const tradeStatus = await farmerContract.getTradeStatus(
@@ -65,7 +64,11 @@ contract('VendorContract::buyProduct', async (accounts) => {
         0,
         { from: vendorAddress },
       );
-      console.log('Trade status :-', tradeStatus);
+      assert.strictEqual(
+        tradeStatus,
+        true,
+        'Purchaser must be updated after successful trade.',
+      );
     });
-  })
+  });
 });
