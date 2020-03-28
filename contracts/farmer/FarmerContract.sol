@@ -37,19 +37,13 @@ contract FarmerContract is FarmerInterface {
 
 
     /* Mappings*/
-    mapping (address => Farmer) public farmers;
-    mapping (address => Item[]) public items;
 
+    /* Mapping for farmer struct */
+    mapping (address /* farmer address */ => Farmer) public farmers;
 
-    /* Constructor */
-    constructor() public
-    {
-        owner = msg.sender;
-    }
+    /* Mapping for Item array */
+    mapping (address /* farmer address */ => Item[]) public items;
 
-    function setVendor(address _vendorContract) public {
-        vendor = VendorInterface(_vendorContract);
-    }
 
 
     /* Modifiers */
@@ -76,7 +70,15 @@ contract FarmerContract is FarmerInterface {
     /* Public Functions */
 
     /**
-     * @notice it add farmer to the mapping
+     * Set vendor contract address - only called once.
+     * @param _vendorContract - vendor contract address.
+     */
+    function setVendor(address _vendorContract) public {
+        vendor = VendorInterface(_vendorContract);
+    }
+
+    /**
+     *  Add farmer to the mapping
                 - farmer must not already present
                 - farmer address must not be empty
                 - ipfs hash must not be empty
@@ -108,7 +110,7 @@ contract FarmerContract is FarmerInterface {
     }
 
     /**
-     * @notice it add item to the array of items and the mapping
+     * Add item to the array of items and the mapping
                 - IPFS hash of item must not be empty
                 - id must not be zero
      * @param
@@ -136,7 +138,7 @@ contract FarmerContract is FarmerInterface {
     }
 
     /**
-     * returns count of items belongs to `_farmerAddress`
+     * Returns count of items belongs to `_farmerAddress`
      * @param _farmerAddress - Farmer address
      *
      * @return itemsLength - length of item array corresponding
@@ -168,7 +170,10 @@ contract FarmerContract is FarmerInterface {
     }
 
     /**
-     * check for farmer exist or not
+     * Check for farmer exist or not
+     * @param _farmer - farmer address
+     *
+     * @return bool - whether farmer is present or not
      */
     function isFarmer(address _farmer)
         external
