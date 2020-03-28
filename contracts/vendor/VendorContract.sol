@@ -50,7 +50,7 @@ contract VendorContract is VendorInterface {
      *              - called only once.
      *              - _farmer contract must not be empty.
      */
-    function setFarmerContract(address _farmer)
+    function setFarmerContractAddress(address _farmer)
         public
     {
         require(
@@ -157,6 +157,6 @@ contract VendorContract is VendorInterface {
         public
         onlyVendor
     {
-        farmer.setProductAsSold(_farmer, _productId);
+        farmer.setProductAsSold(msg.sender, _farmer, _productId);
     }
 }

@@ -45,7 +45,7 @@ contract FarmerContract is FarmerInterface {
     mapping (address /* farmer address */ => Item[]) public items;
 
     /* Mapping for record of products sold */
-    mapping (address => mapping (address => uint256[])) public soldProducts;
+    mapping (address => mapping (address => mapping (uint256 => bool))) public soldProducts;
 
 
     /* Modifiers */
@@ -75,7 +75,7 @@ contract FarmerContract is FarmerInterface {
      * Set vendor contract address - only called once.
      * @param _vendorContract - vendor contract address.
      */
-    function setVendor(address _vendorContract) public {
+    function setVendorContractAddress(address _vendorContract) public {
         vendor = VendorInterface(_vendorContract);
     }
 
@@ -238,9 +238,8 @@ contract FarmerContract is FarmerInterface {
      * @param _farmer - farmer address
      * @param _productId - product id
      */
-    function setProductAsSold(address _farmer, uint256 _productId)
+    function setProductAsSold(address _vendor, address _farmer, uint256 _productId)
         external
-        onlyVendor
     {
         require(
             farmers[_farmer].ipfsHash != bytes32(0),
@@ -251,7 +250,15 @@ contract FarmerContract is FarmerInterface {
             "Product must be available for sell."
         );
 
-        soldProducts[msg.sender][_farmer].push(_productId);
+        soldProducts[_vendor][_farmer][_productId] = true;
         items[_farmer][_productId].isSold = true;
+    }
+
+    function getTradeStatus(address _farmer, uint256 _productId)
+        public
+        view
+        returns (bool tradeStatus)
+    {
+        tradeStatus = soldProducts[msg.sender][_farmer][_productId];
     }
 }
