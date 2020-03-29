@@ -1,4 +1,4 @@
-## AgroTrade
+## AgroTrade Contracts
 ### A blockchain based platform for trading agricultural products
 - Steps to run contracts test
 
