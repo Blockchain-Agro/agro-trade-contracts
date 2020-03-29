@@ -60,6 +60,7 @@ contract('VendorContract::buyProduct', async (accounts) => {
       );
 
       const tradeStatus = await farmerContract.getTradeStatus(
+        vendorAddress,
         farmerAddress,
         0,
         { from: vendorAddress },
