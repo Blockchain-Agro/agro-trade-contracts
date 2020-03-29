@@ -22,6 +22,8 @@ contract VendorContract is VendorInterface {
     /* Mappings */
     mapping (address => Vendor) public vendors;
 
+    mapping (address => mapping (address => mapping (uint256 => bool))) public updateTrust;
+
     /* Modifiers */
 
     /* Modifier to check caller is a farmer. */
@@ -85,7 +87,7 @@ contract VendorContract is VendorInterface {
         );
         Vendor memory vendor = Vendor({
             ipfsHash: _ipfsHash,
-            trust: 0,
+            trust: 5,
             reviewers: 0
         });
 
@@ -133,24 +135,29 @@ contract VendorContract is VendorInterface {
      * @param _vendor - vendor address
      * @param _trust - trust to be update by
      */
-    function updateTrust(address _vendor, uint256 _trust, uint256 _productId)
+    function updateVendorTrust(address _vendor, uint256 _productId, uint256 _trust)
         public
         onlyFarmer
     {
         require(
             vendors[_vendor].ipfsHash != bytes32(0),
-            "Vendor doesn't exist."
+            "Vendor must exist."
         );
         require (
             _trust > 0 && _trust <= 5,
             "Trust value cannot be zero and cannot be greater than 5"
         );
+        require(
+            farmer.getTradeStatus(_vendor, msg.sender, _productId) == true,
+            "Trade must be successful."
+        );
+        require(
+            updateTrust[_vendor][msg.sender][_productId] == false,
+            "Multiple trust updations for same product is not allowed."
+        );
 
-        bool isSold = farmer.getProductStatus(msg.sender, _productId);
-
-        if (isSold) {
-            vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
-        }
+        vendors[_vendor].trust = vendors[_vendor].trust.add(_trust);
+        updateTrust[_vendor][msg.sender][_productId] = true;
     }
 
     function buyProduct(address _farmer, uint256 _productId)

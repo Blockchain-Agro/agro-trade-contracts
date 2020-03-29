@@ -9,4 +9,6 @@ interface FarmerInterface {
     function getProductStatus(address, uint256) external view returns (bool);
 
     function setProductAsSold(address, address, uint256) external;
+
+    function getTradeStatus(address, address, uint256) external view returns (bool);
 }

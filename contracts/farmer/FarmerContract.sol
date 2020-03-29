@@ -270,11 +270,11 @@ contract FarmerContract is FarmerInterface {
         items[_farmer][_productId].isSold = true;
     }
 
-    function getTradeStatus(address _farmer, uint256 _productId)
+    function getTradeStatus(address _vendor, address _farmer, uint256 _productId)
         public
         view
         returns (bool tradeStatus)
     {
-        tradeStatus = soldProducts[msg.sender][_farmer][_productId];
+        tradeStatus = soldProducts[_vendor][_farmer][_productId];
     }
 }
