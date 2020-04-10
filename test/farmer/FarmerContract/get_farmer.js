@@ -11,7 +11,7 @@ contract('FarmerContract::getFarmer', async (accounts) => {
   beforeEach(async () => {
     farmerContract = await FarmerContract.new();
     param = {
-      farmerIpfsHash: '0x2',
+      farmerIpfsHash: '0x0200000000000000000000000000000000000000000000000000000000000000',
     };
     await farmerContract.addFarmer(
       param.farmerIpfsHash,
@@ -20,12 +20,16 @@ contract('FarmerContract::getFarmer', async (accounts) => {
   });
 
   it('should successfully get farmer details', async () => {
-    // const data = await farmerContract.getFarmer(
-    //   farmerAddress,
-    //   { from: farmerAddress},
-    // );
     console.log('farmer address :-', farmerAddress);
-    const data = await farmerContract.getFarmer(farmerAddress,{from: farmerAddress});
-    console.log(data);
+    const data = await farmerContract.getFarmer(
+      farmerAddress,
+      {from: farmerAddress}
+    );
+    ipfsHash = data[0];
+    assert.strictEqual(
+      ipfsHash,
+      param.farmerIpfsHash,
+      'Farmer ipfs hash must match with added'
+    );
   });
 });

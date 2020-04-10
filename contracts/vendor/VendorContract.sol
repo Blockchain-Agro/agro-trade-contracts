@@ -107,8 +107,7 @@ contract VendorContract is VendorInterface {
      */
     function getVendor(address _vendor)
         public
-        onlyFarmer
-        onlyVendor
+        view
         returns (bytes32,uint256,uint256)
     {
         require(
