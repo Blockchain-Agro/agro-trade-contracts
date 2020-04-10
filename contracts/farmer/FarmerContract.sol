@@ -210,8 +210,7 @@ contract FarmerContract is FarmerInterface {
      */
     function getFarmer(address _farmer)
         public
-        onlyFarmer
-        onlyVendor
+        view
         returns (bytes32, uint256, uint256)
     {
         require(
